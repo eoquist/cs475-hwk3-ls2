@@ -41,18 +41,18 @@ void ls2List(char* path){
     }
 
 	// Process each entry.
-	pDirent = readdir(pDir);
-    while ( pDirent != NULL) {
-        printf ("[%s]\n", pDirent->d_name); // ???
+	entry = readdir(currDir);
+    while ( entry != NULL) {
+        printf ("%s ", entry.d_name); 
     }
-
-    // Close directory and exit.
-    closedir (currDir);
-    return 0;
 
 	// if no path found
 	// printf("%s is not a directory path! Exiting...",pathname)
 	// then exit
+
+    // Close directory and exit.
+    closedir (currDir);
+    return 0;
 }
 
 void ls2Search(char* path, char* filenameToMatch){
@@ -63,14 +63,10 @@ void ls2Search(char* path, char* filenameToMatch){
     }
 
 	// Process each entry.
-	pDirent = readdir(pDir);
-    while ( pDirent != NULL) {
-        printf ("[%s]\n", pDirent->d_name); // ???
+	entry = readdir(currDir);
+    while ( entry != NULL) {
+        printf ("%s ", entry.d_name); 
     }
-
-    // Close directory and exit.
-    closedir (currDir);
-    return 0;
 
 	// if no path found
 	// printf("%s is not a directory path! Exiting...",pathname)
@@ -79,6 +75,10 @@ void ls2Search(char* path, char* filenameToMatch){
 	// if matching file found
 	// print the directory names plus (directory) and then main with its size
 	// if not found - no print required
+
+    // Close directory and exit.
+    closedir (currDir);
+    return 0;
 }
 
 // malloc usage

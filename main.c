@@ -2,12 +2,22 @@
 #include <stdio.h>
 #include "stack.h"
 #include "ls2.h"
+#include <unistd.h>
+#include <sys/stat.h> // lstat(..) system call
 
 /**
  * Main function
  * Usage: ls2 <path> [exact-match-pattern]
  */
 int main(int argc, char* argv[]) {
+	if(argc == 1){
+		ls2List(argv[1]);
+	}else if(argc == 2){
+		ls2Search(argv[1], argv[2]);
+	}else{
+		printf("Correct usage is: ./ls2Sol <path> [exact-match-pattern]");
+	}
+
 	// stack stores the lines to print out
 	stack_t *s = initstack();
 
@@ -22,3 +32,56 @@ int main(int argc, char* argv[]) {
 	freestack(s);
 	return 0;
 }
+
+void ls2List(char* path){
+    currDir = opendir(argv[1]); // Check to see if you can open directory 
+    if (currDir == NULL) {
+		printf ("Can't open directory '%s'\n", argv[1]);
+        return 1;
+    }
+
+	// Process each entry.
+	pDirent = readdir(pDir);
+    while ( pDirent != NULL) {
+        printf ("[%s]\n", pDirent->d_name); // ???
+    }
+
+    // Close directory and exit.
+    closedir (currDir);
+    return 0;
+
+	// if no path found
+	// printf("%s is not a directory path! Exiting...",pathname)
+	// then exit
+}
+
+void ls2Search(char* path, char* filenameToMatch){
+	currDir = opendir(argv[1]); // Check to see if you can open directory 
+    if (currDir == NULL) {
+		printf ("Can't open directory '%s'\n", argv[1]);
+        return 1;
+    }
+
+	// Process each entry.
+	pDirent = readdir(pDir);
+    while ( pDirent != NULL) {
+        printf ("[%s]\n", pDirent->d_name); // ???
+    }
+
+    // Close directory and exit.
+    closedir (currDir);
+    return 0;
+
+	// if no path found
+	// printf("%s is not a directory path! Exiting...",pathname)
+	// then exit
+
+	// if matching file found
+	// print the directory names plus (directory) and then main with its size
+	// if not found - no print required
+}
+
+// malloc usage
+// Employee *my_employees = (Employee*) malloc(num_employees * sizeof(Employee));  // on the heap!
+// free(my_employees); // deallocate space after we're done!
+// my_employees = NULL; // defensive programming

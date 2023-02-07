@@ -8,21 +8,43 @@
 #include "ls2.h"
 
 // TODO: function definitions here for ls2
-void ls2List(char *path)
+void ls2List(char *path, int indent)
 {
+    if (indent > 5)
+    {
+        return;
+    }
+
     DIR *currDir;
     struct dirent *entry;
+    struct stat st;
+    stack_t *s = initstack(); // stack stores DIR and filenames
 
     currDir = opendir(path); // Check to see if you can open directory
     if (currDir == NULL)
     {
         printf("Can't open directory '%s'\n", path);
-        exit(0); /* return to OS */
+        // exit(0); /* return to OS */
     }
 
     while ((entry = readdir(currDir)) != NULL)
-    { // Look at each entry.
-        printf("%s ", entry->d_name);
+    {
+        if (entry->d_type == DT_DIR)
+        { // directory
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            { // avoid
+                continue;
+            }
+            printf("%*s%s/ (directory)\n", indent, "", entry->d_name);
+            ls2List(path, indent + 2);
+        }
+        else
+        {
+            stat(entry->d_name, &st);
+            off_t size = st.st_size;
+
+            printf("%s (%lld bytes)\n", entry->d_name, size); // tabbed file entries -- lld for off_t
+        }
     }
 
     // if no path found
@@ -33,9 +55,10 @@ void ls2List(char *path)
     // print the directory names plus (directory) and then main with its size
     // if not found - no print required
 
-    // Close directory and exit.
-    closedir(currDir);
-    exit(0); /* return to OS */
+    printstack(s); // print stack
+    freestack(s);  // free up stack
+
+    closedir(currDir); // Close DIR and exit
 }
 
 void ls2Search(char *path, char *filenameToMatch)
@@ -44,7 +67,7 @@ void ls2Search(char *path, char *filenameToMatch)
     struct dirent *entry;
 
     currDir = opendir(path); // Check to see if you can open directory
-    if (currDir == NULL)
+    if (currDir != NULL)
     {
         printf("Can't open directory '%s'\n", path);
         exit(0); /* return to OS */
@@ -68,7 +91,6 @@ void ls2Search(char *path, char *filenameToMatch)
 
     // Close directory and exit.
     closedir(currDir);
-    exit(0); /* return to OS */
 }
 
 // malloc usage

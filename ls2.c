@@ -17,7 +17,7 @@ void ls2List(char *path)
     if (currDir == NULL)
     {
         printf("Can't open directory '%s'\n", path);
-        return 1;
+        exit(0); /* return to OS */
     }
 
     while ((entry = readdir(currDir)) != NULL)
@@ -35,7 +35,7 @@ void ls2List(char *path)
 
     // Close directory and exit.
     closedir(currDir);
-    return 0;
+    exit(0); /* return to OS */
 }
 
 void ls2Search(char *path, char *filenameToMatch)
@@ -47,7 +47,7 @@ void ls2Search(char *path, char *filenameToMatch)
     if (currDir == NULL)
     {
         printf("Can't open directory '%s'\n", path);
-        return 1;
+        exit(0); /* return to OS */
     }
 
     while ((entry = readdir(currDir)) != NULL)
@@ -68,7 +68,7 @@ void ls2Search(char *path, char *filenameToMatch)
 
     // Close directory and exit.
     closedir(currDir);
-    return 0;
+    exit(0); /* return to OS */
 }
 
 // malloc usage

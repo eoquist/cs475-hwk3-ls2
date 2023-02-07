@@ -23,20 +23,19 @@ void ls2List(char *path, int indent)
     currDir = opendir(path); // Check to see if you can open directory
     if (currDir == NULL)
     {
-        printf("Can't open directory '%s'\n", path);
+        printf("Can't open directory '%s' Exiting...\n", path);
         exit(0); /* return to OS */
     }
-    printf("%*s%s/ (directory)\n", indent, "", path);
 
     while ((entry = readdir(currDir)) != NULL)
     {
         if (entry->d_type == DT_DIR)
         { 
-            // if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-            // { // avoid
-            //     continue;
-            // }
-            printf("%*s%s/ (directory)\n", indent + 2, "", entry->d_name);
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            { 
+                continue; // don't want to get stuck in hell
+            }
+            printf("%*s%s/ (directory)\n", indent, "", entry->d_name);
             ls2List(path, indent + 4);
         }
         else
@@ -47,14 +46,6 @@ void ls2List(char *path, int indent)
             printf("%*s%s (%ld bytes)\n", indent, "", entry->d_name, size); // tabbed file entries -- lld for off_t
         }
     }
-
-    // if no path found
-    // printf("%s is not a directory path! Exiting...",pathname)
-    // then exit
-
-    // if matching file found
-    // print the directory names plus (directory) and then main with its size
-    // if not found - no print required
 
     printstack(s); // print stack
     freestack(s);  // free up stack

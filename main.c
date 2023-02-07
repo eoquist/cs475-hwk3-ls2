@@ -9,8 +9,6 @@
  * Usage: ls2 <path> [exact-match-pattern]
  */
 int main(int argc, char* argv[]) {
-	printf("argc = %d\n",argc);
-
 	if(argv[1] == NULL){
 		printf("Correct usage is: ./ls2 <path> [exact-match-pattern]\n");
 		return 0;

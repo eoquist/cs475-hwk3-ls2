@@ -10,7 +10,7 @@
 // TODO: function definitions here for ls2
 void ls2List(char *path, int indent)
 {
-    if (indent > 5)
+    if (indent > 7)
     {
         return;
     }
@@ -24,26 +24,27 @@ void ls2List(char *path, int indent)
     if (currDir == NULL)
     {
         printf("Can't open directory '%s'\n", path);
-        // exit(0); /* return to OS */
+        exit(0); /* return to OS */
     }
+    printf("%*s%s/ (directory)\n", indent, "", path);
 
     while ((entry = readdir(currDir)) != NULL)
     {
         if (entry->d_type == DT_DIR)
-        { // directory
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-            { // avoid
-                continue;
-            }
-            printf("%*s%s/ (directory)\n", indent, "", entry->d_name);
-            ls2List(path, indent + 2);
+        { 
+            // if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            // { // avoid
+            //     continue;
+            // }
+            printf("%*s%s/ (directory)\n", indent + 2, "", entry->d_name);
+            ls2List(path, indent + 4);
         }
         else
         {
             stat(entry->d_name, &st);
             off_t size = st.st_size;
 
-            printf("%s (%lld bytes)\n", entry->d_name, size); // tabbed file entries -- lld for off_t
+            printf("%*s%s (%ld bytes)\n", indent, "", entry->d_name, size); // tabbed file entries -- lld for off_t
         }
     }
 

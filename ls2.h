@@ -8,7 +8,7 @@
 #define INDENT "    "
 
 // TODO: Function declarations here for ls2
-void ls2List(char* path);
-void ls2Search(char* path, char* filenameToMatch);
+ls2List(char* path);
+ls2Search(char* path, char* filenameToMatch);
 
 #endif

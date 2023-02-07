@@ -1,58 +1,73 @@
 #include <dirent.h>
 #include <stdio.h>
+#include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
+#include <sys/stat.h> // lstat(..) system call
 #include <unistd.h>
 #include "ls2.h"
 
-
 // TODO: function definitions here for ls2
-void ls2List(char* path){
-    currDir = opendir(argv[1]); // Check to see if you can open directory 
-    if (currDir == NULL) {
-		printf ("Can't open directory '%s'\n", argv[1]);
+void ls2List(char *path)
+{
+    DIR *currDir;
+    struct dirent *entry;
+
+    currDir = opendir(path); // Check to see if you can open directory
+    if (currDir == NULL)
+    {
+        printf("Can't open directory '%s'\n", path);
         return 1;
     }
 
-	// Process each entry.
-	entry = readdir(currDir);
-    while ( entry != NULL) {
-        printf ("%s ", entry.d_name); 
+    while ((entry = readdir(currDir)) != NULL)
+    { // Look at each entry.
+        printf("%s ", entry->d_name);
     }
 
-	// if no path found
-	// printf("%s is not a directory path! Exiting...",pathname)
-	// then exit
+    // if no path found
+    // printf("%s is not a directory path! Exiting...",pathname)
+    // then exit
+
+    // if matching file found
+    // print the directory names plus (directory) and then main with its size
+    // if not found - no print required
 
     // Close directory and exit.
-    closedir (currDir);
+    closedir(currDir);
     return 0;
 }
 
-void ls2Search(char* path, char* filenameToMatch){
-	currDir = opendir(argv[1]); // Check to see if you can open directory 
-    if (currDir == NULL) {
-		printf ("Can't open directory '%s'\n", argv[1]);
+void ls2Search(char *path, char *filenameToMatch)
+{
+    DIR *currDir;
+    struct dirent *entry;
+
+    currDir = opendir(path); // Check to see if you can open directory
+    if (currDir == NULL)
+    {
+        printf("Can't open directory '%s'\n", path);
         return 1;
     }
 
-	// Process each entry.
-	entry = readdir(currDir);
-    while ( entry != NULL) {
-        printf ("%s ", entry.d_name); 
+    while ((entry = readdir(currDir)) != NULL)
+    { // Look at each entry.
+        if (strcmp(entry->d_name, filenameToMatch) == 0)
+        {
+            printf("%s ", entry->d_name);
+        }
     }
 
-	// if no path found
-	// printf("%s is not a directory path! Exiting...",pathname)
-	// then exit
+    // if no path found
+    // printf("%s is not a directory path! Exiting...",pathname)
+    // then exit
 
-	// if matching file found
-	// print the directory names plus (directory) and then main with its size
-	// if not found - no print required
+    // if matching file found
+    // print the directory names plus (directory) and then main with its size
+    // if not found - no print required
 
     // Close directory and exit.
-    closedir (currDir);
+    closedir(currDir);
     return 0;
 }
 

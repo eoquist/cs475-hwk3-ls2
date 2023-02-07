@@ -3,7 +3,6 @@
 #include "stack.h"
 #include "ls2.h"
 #include <unistd.h>
-#include <sys/stat.h> // lstat(..) system call
 
 /**
  * Main function

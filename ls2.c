@@ -13,25 +13,25 @@ void ls2List(char *path, int indent)
     DIR *currDir;
     struct dirent *entry;
     struct stat st;
-    // char str[300]; 
+    // char str[300];
     // stack_t *s = initstack(); // stack stores DIR and filenames
-    
+
     // Check to see if you can open directory
-    currDir = opendir(path); 
+    currDir = opendir(path);
     if (currDir == NULL)
     {
-        // printf("Can't open directory '%s' Exiting...\n", path);
-        exit(0); /* return to OS */
-        /*for some reason the tags dir doesnt exist in ls2Sol so idk why its causing me so much problems here :( */
+        printf("Can't open directory '%s' Exiting...\n", path);
+        // exit(0); /* return to OS */
     }
 
+    printf("directory opened");
     // Look at entries
     while ((entry = readdir(currDir)) != NULL)
     {
         if (entry->d_type == DT_DIR)
-        { 
+        {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-            { 
+            {
                 continue; // don't want to get stuck in hell
             }
             printf("%*s%s/ (directory)\n", indent, "", entry->d_name);
@@ -39,15 +39,16 @@ void ls2List(char *path, int indent)
             // push(s,str);
             // str[0] = '\0';
 
-            /*
-                clowning !!!
-                need to make sure its not doing this depth first, essentially
+            /* !!!
+                need to make sure its not doing just depth recursion
+                aka -- be able to back out of a directory and continue recursing
 
                 push(s,str);
             */
             // Construct new path from our base path
             strcat(path, "/");
             strcat(path, entry->d_name);
+
             ls2List(path, indent + 4);
         }
         else
@@ -76,7 +77,7 @@ void ls2Search(char *path, char *filenameToMatch)
     stack_t *s = initstack(); // stack stores DIR and filenames
 
     // Check to see if you can open directory
-    currDir = opendir(path); 
+    currDir = opendir(path);
     if (currDir == NULL)
     {
         printf("Can't open directory '%s' Exiting...\n", path);
@@ -85,7 +86,7 @@ void ls2Search(char *path, char *filenameToMatch)
 
     // Look at entries
     while ((entry = readdir(currDir)) != NULL)
-    { 
+    {
         if (strcmp(entry->d_name, filenameToMatch) == 0)
         {
             printf("%s ", entry->d_name);

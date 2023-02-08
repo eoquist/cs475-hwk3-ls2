@@ -1,71 +1,50 @@
 #include <dirent.h>
 #include <stdio.h>
-#include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h> // lstat(..) system call
 #include <unistd.h>
 #include "ls2.h"
 
-// TODO: function definitions here for ls2
 void ls2List(char *path, int indent)
 {
     DIR *currDir;
     struct dirent *entry;
     struct stat st;
-    // char str[300];
-    // stack_t *s = initstack(); // stack stores DIR and filenames
 
-    // Check to see if you can open directory
-    currDir = opendir(path);
-    if (currDir == NULL)
+    if ((currDir = opendir(path)) == NULL)
     {
-        printf("Can't open directory '%s' Exiting...\n", path);
-        // exit(0); /* return to OS */
+        strcat(path, "/..");
     }
-
-    printf("directory opened");
-    // Look at entries
-    while ((entry = readdir(currDir)) != NULL)
+    else
     {
-        if (entry->d_type == DT_DIR)
+        // Look at entries
+        while ((entry = readdir(currDir)) != NULL)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            if (entry->d_type == DT_DIR)
             {
-                continue; // don't want to get stuck in hell
+                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                {
+                    continue; // don't want to get stuck in hell
+                }
+                printf("%*s%s/ (directory)\n", indent, "", entry->d_name);
+
+                // path pain
+                strcat(path, "/");
+                strcat(path, entry->d_name);
+                // printf("\t\t current path: %s\n", path);
+
+                ls2List(path, indent + 4);
             }
-            printf("%*s%s/ (directory)\n", indent, "", entry->d_name);
-            // snprintf(str, sizeof(str),"%*s%s/ (directory)\n", indent, "", entry->d_name);
-            // push(s,str);
-            // str[0] = '\0';
-
-            /* !!!
-                need to make sure its not doing just depth recursion
-                aka -- be able to back out of a directory and continue recursing
-
-                push(s,str);
-            */
-            // Construct new path from our base path
-            strcat(path, "/");
-            strcat(path, entry->d_name);
-
-            ls2List(path, indent + 4);
+            else
+            {
+                stat(entry->d_name, &st);
+                off_t size = st.st_size;
+                printf("%*s%s (%ld bytes)\n", indent, "", entry->d_name, size); // !!! 8 bytes for way too many files
+            }
         }
-        else
-        {
-            stat(entry->d_name, &st);
-            off_t size = st.st_size;
-
-            printf("%*s%s (%ld bytes)\n", indent, "", entry->d_name, size);
-            // snprintf(str, sizeof(str),"%*s%s (%ld bytes)\n", indent, "", entry->d_name, size);
-            // push(s,str);
-            // str[0] = '\0';
-        }
+        strcat(path, "/..");
     }
-
-    // printstack(s); // print stack
-    // freestack(s);  // free up stack
-
     closedir(currDir); // Close DIR and exit
 }
 
@@ -74,36 +53,25 @@ void ls2Search(char *path, char *filenameToMatch)
     DIR *currDir;
     struct dirent *entry;
     // struct stat st;
-    stack_t *s = initstack(); // stack stores DIR and filenames
 
-    // Check to see if you can open directory
     currDir = opendir(path);
     if (currDir == NULL)
     {
-        printf("Can't open directory '%s' Exiting...\n", path);
-        exit(0); /* return to OS */
+        // return from whence ye came, wench
     }
-
-    // Look at entries
-    while ((entry = readdir(currDir)) != NULL)
+    else
     {
-        if (strcmp(entry->d_name, filenameToMatch) == 0)
+        // Look at entries
+        while ((entry = readdir(currDir)) != NULL)
         {
-            printf("%s ", entry->d_name);
+            if (strcmp(entry->d_name, filenameToMatch) == 0)
+            {
+                // if matching file found, push all parent 'dir_name/ (directory)' and the matching file with its size in bytes
+                printf("%s ", entry->d_name);
+            }
+            // if not found - no print required
+            // ls2Search(path,filenameToMatch); // such that it's a path that hasnt been explored yet
         }
     }
-
-    // if matching file found
-    // print the directory names plus (directory) and then main with its size
-    // if not found - no print required
-
-    printstack(s); // print stack
-    freestack(s);  // free up stack
-
     closedir(currDir); // Close DIR and exit
 }
-
-// malloc usage
-// Employee *my_employees = (Employee*) malloc(num_employees * sizeof(Employee));  // on the heap!
-// free(my_employees); // deallocate space after we're done!
-// my_employees = NULL; // defensive programming

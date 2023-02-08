@@ -9,6 +9,6 @@
 
 // TODO: Function declarations here for ls2
 void ls2List(char *path, int indent);
-void ls2Search(char *path, char *filenameToMatch);
+char *ls2Search(char *path, char *filenameToMatch);
 
 #endif

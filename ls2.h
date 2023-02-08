@@ -6,6 +6,7 @@
 #define TRUE 1
 #define FALSE 0
 #define INDENT "    "
+#define MAX_STRLEN 260
 
 // TODO: Function declarations here for ls2
 void ls2List(char *path, int indent);

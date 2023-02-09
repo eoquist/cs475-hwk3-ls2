@@ -32,7 +32,7 @@ void ls2List(char *path, int indent)
 
                 ls2List(path, indent + 4);
             }
-            else
+            else if (entry->d_type == DT_REG)
             {
                 stat(entry->d_name, &st);
                 off_t size = st.st_size;
@@ -49,13 +49,13 @@ char *ls2Search(char *path, char *filenameToMatch)
     DIR *currDir;
     struct dirent *entry;
     struct stat st;
-    char *str[MAX_STRLEN];
+    char *cwd[MAX_STRLEN];
 
-    ptr = (int *)malloc(100 * sizeof(int));
-    // Since the size of int is 4 bytes, this statement will allocate 400 bytes of memory.
-    // And, the pointer ptr holds the address of the first byte in the allocated memory.
-    ptr = realloc(ptr, newSize);
-    // where ptr is reallocated with new size 'newSize'.
+    // ptr = (int *)malloc(100 * sizeof(int));
+    // // Since the size of int is 4 bytes, this statement will allocate 400 bytes of memory.
+    // // And, the pointer ptr holds the address of the first byte in the allocated memory.
+    // ptr = realloc(ptr, newSize);
+    // // where ptr is reallocated with new size 'newSize'.
 
     currDir = opendir(path);
     if (currDir == NULL)
@@ -70,9 +70,10 @@ char *ls2Search(char *path, char *filenameToMatch)
             {
                 stat(entry->d_name, &st);
                 off_t size = st.st_size;
+                getcwd(cwd, sizeof(cwd));
 
                 // if matching file found, push all parent 'dir_name/ (directory)' and the matching file with its size in bytes
-                snprintf(str, sizeof(str),"%*s%s (%ld bytes)\n", indent, "", entry->d_name, size);
+                // snprintf(str, sizeof(str), "%*s%s (%ld bytes)\n", indent, "", entry->d_name, size);
             }
             // if not found - no print required
             // ls2Search(path,filenameToMatch); // such that it's a path that hasnt been explored yet

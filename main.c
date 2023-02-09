@@ -25,32 +25,16 @@ int main(int argc, char *argv[])
 		printf("Can't open directory '%s' Exiting...\n", argv[1]);
 		exit(0);
 	}
-
-	printf("havent handled anything!");
 	
 	stack_t *s = initstack(); // stack stores DIR and filenames
-
 	if (argc == 2)
 	{
 		ls2List(argv[1], 0);
 	}
 	else if (argc == 3)
 	{
-		printf("easy test");
-		s = ls2Search(argv[1], 0, argv[2], s, 0);
+		ls2Search(argv[1], 0, argv[2], s, 0);
 	}
-
-	// for (int i = 0; i < MAX_STRLEN; i++)
-	// {
-	// 	if ((path[i] = malloc(sizeof(char) * MAX_STRLEN)) == NULL)
-	// 	{
-	// 		printf("unable to allocate memory \n");
-	// 		return -1;
-	// 	}
-	// }
-
-	// free(path);
-	printstack(s); // print stack
 	freestack(s);  // free up stack
 	return 0;
 }

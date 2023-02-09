@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+	printf("havent handled anything!");
+	
 	stack_t *s = initstack(); // stack stores DIR and filenames
 
 	if (argc == 2)
@@ -34,7 +36,8 @@ int main(int argc, char *argv[])
 	}
 	else if (argc == 3)
 	{
-		s = ls2Search(argv[1], 0, argv[2], s);
+		printf("easy test");
+		s = ls2Search(argv[1], 0, argv[2], s, 0);
 	}
 
 	// for (int i = 0; i < MAX_STRLEN; i++)

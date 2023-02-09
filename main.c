@@ -17,16 +17,16 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
+	// Checkif dir exists
 	DIR *currDir;
 	currDir = opendir(argv[1]);
-	if (currDir == NULL) // Checkif dir exists
+	if (currDir == NULL)
 	{
 		printf("Can't open directory '%s' Exiting...\n", argv[1]);
 		exit(0);
 	}
 
 	stack_t *s = initstack(); // stack stores DIR and filenames
-	char *path[1000]; // 1000 == length of dir contents -- unknown quantity
 
 	if (argc == 2)
 	{
@@ -34,20 +34,19 @@ int main(int argc, char *argv[])
 	}
 	else if (argc == 3)
 	{
-		*path = ls2Search(argv[1], argv[2]);
+		s = ls2Search(argv[1], 0, argv[2], s);
 	}
 
-	// /* Now, lets work on b */
 	// for (int i = 0; i < MAX_STRLEN; i++)
 	// {
 	// 	if ((path[i] = malloc(sizeof(char) * MAX_STRLEN)) == NULL)
-	// 	{ 
+	// 	{
 	// 		printf("unable to allocate memory \n");
 	// 		return -1;
 	// 	}
 	// }
 
-	free(path);
+	// free(path);
 	printstack(s); // print stack
 	freestack(s);  // free up stack
 	return 0;

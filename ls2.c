@@ -44,18 +44,15 @@ void ls2List(char *path, int indent)
     closedir(currDir);
 }
 
-char *ls2Search(char *path, char *filenameToMatch)
+stack_t *ls2Search(char *path, int indent, char *filenameToMatch, stack_t *stack)
 {
     DIR *currDir;
     struct dirent *entry;
     struct stat st;
-    char *cwd[MAX_STRLEN];
-
-    // ptr = (int *)malloc(100 * sizeof(int));
-    // // Since the size of int is 4 bytes, this statement will allocate 400 bytes of memory.
-    // // And, the pointer ptr holds the address of the first byte in the allocated memory.
-    // ptr = realloc(ptr, newSize);
-    // // where ptr is reallocated with new size 'newSize'.
+    char tmp[MAX_STRLEN];
+    char str[500]; // arbitrary size -- malloc better?
+    tmp[0] = '\0';
+    str[0] = '\0';
 
     currDir = opendir(path);
     if (currDir == NULL)
@@ -66,20 +63,35 @@ char *ls2Search(char *path, char *filenameToMatch)
     {
         while ((entry = readdir(currDir)) != NULL)
         {
-            if (strcmp(entry->d_name, filenameToMatch) == 0)
+            if (entry->d_type == DT_DIR)
             {
-                stat(entry->d_name, &st);
-                off_t size = st.st_size;
-                getcwd(cwd, sizeof(cwd));
+                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                {
+                    continue;
+                }
+                snprintf(tmp, sizeof(tmp), "%*s%s/ (directory)\n", indent, "", entry->d_name);
+                strcat(str, tmp);
+                tmp[0] = '\0';
 
-                // if matching file found, push all parent 'dir_name/ (directory)' and the matching file with its size in bytes
-                // snprintf(str, sizeof(str), "%*s%s (%ld bytes)\n", indent, "", entry->d_name, size);
+                ls2Search(path, indent + 4, filenameToMatch, stack);
             }
-            // if not found - no print required
-            // ls2Search(path,filenameToMatch); // such that it's a path that hasnt been explored yet
+            else if (entry->d_type == DT_REG)
+            {
+                if (strcmp(entry->d_name, filenameToMatch) == 0)
+                {
+                    stat(entry->d_name, &st);
+                    off_t size = st.st_size;
+
+                    snprintf(tmp, sizeof(tmp), "%*s%s (%ld bytes)\n", indent, "", entry->d_name, size);
+                    strcat(str, tmp);
+                    tmp[0] = '\0';
+
+                    push(stack, str);
+                }
+            }
         }
         chdir("..");
     }
     closedir(currDir);
-    return path;
+    return stack;
 }

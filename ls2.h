@@ -10,6 +10,6 @@
 
 // TODO: Function declarations here for ls2
 void ls2List(char *path, int indent);
-char *ls2Search(char *path, char *filenameToMatch);
+stack_t *ls2Search(char *path, int indent, char *filenameToMatch, stack_t *stack);
 
 #endif
